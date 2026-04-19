@@ -1,0 +1,124 @@
+import os
+import keyboard
+import time
+
+
+class io_handler:
+    
+    x_size: int
+    y_size: int
+    game_speed = float
+    last_input: str
+    matrix = []
+
+    def __init__(self, dim, speed):
+        self.x_size = dim[0]
+        self.y_size = dim[1]
+        
+        self.game_speed = speed
+        self.last_input = 'w'
+
+        for i in range (self.y_size): 
+            self.matrix.append([0]*self.x_size)
+
+    def record_inputs(self):
+        keyboard.add_hotkey('w', lambda: setattr(self, "last_input", 'w'))
+        keyboard.add_hotkey('a', lambda: setattr(self, "last_input", 'a'))
+        keyboard.add_hotkey('s', lambda: setattr(self, "last_input", 's'))
+        keyboard.add_hotkey('d', lambda: setattr(self, "last_input", 'd'))
+        keyboard.add_hotkey('esc', lambda: setattr(self, "last_input", 'end'))
+
+    def display(self):
+        def display_h_line(self):
+            print ('+', end='')
+            print ('--'* len(self.matrix[0]), end='')
+            print ('+')
+        
+        def display_content_line(line):
+            print ('|', end='')
+            for item in line: 
+                if item == 1:
+                    print ('[]', end='')
+                elif item == 2:
+                    print ('<>', end='')
+                elif item == 3:
+                    print ('()', end='')
+                else:
+                    print ('  ', end='')
+
+            print ('|')
+
+        os.system('cls' if os.name == 'nt' else 'clear')
+        display_h_line(self)
+        for line in self.matrix:
+            display_content_line(line)
+        display_h_line(self)
+
+### exemplo do uso da classe io_handler  
+instance = io_handler((10,10), 0.5)
+
+instance.matrix[0][0] = 1 #corpo
+instance.matrix[0][1] = 2 #cabeça
+instance.matrix[2][2] = 3 #fruta
+
+
+
+cobra = [(0,1),(0,0)]
+frutas = [(2,2)]
+
+
+def movimentacao(cobra,direcao,frutas):
+         (x,y) = cobra[0]
+         
+         if(direcao == 'w'):     
+            nova_cabeca = (x,y-1)
+            cobra.insert(0,nova_cabeca)
+            cobra.pop()
+            return cobra   
+        
+         if(direcao == 'd'):
+            nova_cabeca = (x+1,y)
+            cobra.insert(0,nova_cabeca)
+            cobra.pop()
+            return cobra   
+
+         if(direcao == 'a'):
+            nova_cabeca = (x-1,y)
+            cobra.insert(0,nova_cabeca)
+            cobra.pop()    
+            return cobra   
+         
+         if(direcao == 's'):
+            nova_cabeca = (x,y+1)
+            cobra.insert(0,nova_cabeca)
+            cobra.pop()   
+            return cobra     
+           
+def game_loop():
+    instance.record_inputs()
+    while True:
+        instance.display()
+        print("mova com WASD, saia com esc. Ultimo botão:", end=' ')
+        ###adicione seu código para lidar com o jogo aqui
+        movimentacao(cobra,instance.last_input,frutas)
+        for i in range (len(instance.matrix)):
+            for j in range (len(instance.matrix[0])):
+                instance.matrix[i][j] = 0
+        
+        
+        for k in range (len(cobra)):
+            (x,y) = cobra[k]
+            if(k == 1):
+                instance.matrix[y][x] = 1
+            else:
+                instance.matrix[y][x] = 2    
+        
+        
+
+        print(instance.last_input)
+        if(instance.last_input == 'end'):
+            exit()
+        time.sleep(instance.game_speed)
+
+if __name__ == "__main__":
+    game_loop()
