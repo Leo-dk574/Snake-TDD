@@ -1,0 +1,21 @@
+import snake
+
+def test_movimento_dir():
+    cobra = snake.movimentacao([(0,1),(0,0)],'d',[(2,1)])
+
+    assert cobra[0] == (1,1)
+
+def test_movimento_esq():
+    cobra = snake.movimentacao([(1,1),(2,1)],'a',[(3,1)])
+
+    assert cobra[0] == (0,1) 
+
+def test_movimento_cima():
+    cobra = snake.movimentacao([(1,1),(2,1)],'w',[(2,1)])
+
+    assert cobra[0] == (1,0) 
+
+def test_movimento_baixo():
+    cobra = snake.movimentacao([(1,1),(2,1)],'s',[(2,1)])
+
+    assert cobra[0] == (1,2) 
