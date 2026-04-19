@@ -1,0 +1,15 @@
+def test_volta_tela():
+    cobra = snake.movimentacao([(9,1),(8,1)],'d',[(2,1)])
+
+    assert cobra[0] == (0,1)
+
+ 
+def test_come_fruta():
+    cobra = snake.movimentacao([(0,1),(0,0)],'d',[(1,1)])
+
+    
+    assert len(cobra) == 3
+
+
+
+
