@@ -50,5 +50,9 @@ def test_tail_left():
     cobra = [(2,1),(1,1),(0,1)]
     assert snake_game.get_tail_sprite(cobra) is not None
 
+def test_body_horizontal():
+    cobra = [(2,1),(1,1),(0,1)]
+    assert snake_game.get_body_sprite(cobra, 1) is not None
+
 
 
