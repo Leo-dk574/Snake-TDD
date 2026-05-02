@@ -1,0 +1,2 @@
+def test_head_right():
+    assert snake_game.get_head_sprite('d') is not None
