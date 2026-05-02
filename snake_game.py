@@ -30,24 +30,23 @@ tail_left = pygame.image.load('Graphics/tail_left.png').convert_alpha()
 tail_right = pygame.image.load('Graphics/tail_right.png').convert_alpha()
 
 # Escala
-apple = pygame.transform.scale(apple, (CELL, CELL))
+sprites = [
+    apple, head_right, head_left, head_down, head_up,
+    body_bottomleft, body_bottomright, body_vertical,
+    body_horizontal, body_topleft, body_topright,
+    tail_down, tail_up, tail_left, tail_right
+]
 
-head_right = pygame.transform.scale(head_right, (CELL, CELL))
-head_left = pygame.transform.scale(head_left, (CELL, CELL))
-head_down = pygame.transform.scale(head_down, (CELL, CELL))
-head_up = pygame.transform.scale(head_up, (CELL, CELL))
+for i in range(len(sprites)):
+    sprites[i] = pygame.transform.scale(sprites[i], (CELL, CELL))
 
-body_bottomleft = pygame.transform.scale(body_bottomleft, (CELL, CELL))
-body_bottomright = pygame.transform.scale(body_bottomright, (CELL, CELL))
-body_vertical = pygame.transform.scale(body_vertical, (CELL, CELL))
-body_horizontal = pygame.transform.scale(body_horizontal, (CELL, CELL))
-body_topleft = pygame.transform.scale(body_topleft, (CELL, CELL))
-body_topright = pygame.transform.scale(body_topright, (CELL, CELL))
+(
+    apple, head_right, head_left, head_down, head_up,
+    body_bottomleft, body_bottomright, body_vertical,
+    body_horizontal, body_topleft, body_topright,
+    tail_down, tail_up, tail_left, tail_right
+) = sprites
 
-tail_down = pygame.transform.scale(tail_down, (CELL, CELL))
-tail_up = pygame.transform.scale(tail_up, (CELL, CELL))
-tail_left = pygame.transform.scale(tail_left, (CELL, CELL))
-tail_right = pygame.transform.scale(tail_right, (CELL, CELL))
 
 cobra = [(0, 1), (0, 0)]
 frutas = [(2, 2)]
@@ -72,6 +71,61 @@ def try_set(nova_dir):
         direcao = nova_dir
 
 
+def get_head_sprite(d):
+    if d == 'd':
+        return head_right
+    elif d == 'a':
+        return head_left
+    elif d == 'w':
+        return head_up
+    return head_down
+
+
+def get_tail_sprite(cobra):
+    tx, ty = cobra[-1]
+    px, py = cobra[-2]
+
+    if px > tx:
+        return tail_left
+    elif px < tx:
+        return tail_right
+    elif py > ty:
+        return tail_up
+    return tail_down
+
+
+def get_body_sprite(cobra, i):
+    x, y = cobra[i]
+    prev_x, prev_y = cobra[i - 1]
+    next_x, next_y = cobra[i + 1]
+
+    if prev_y == y and next_y == y:
+        return body_horizontal
+
+    elif prev_x == x and next_x == x:
+        return body_vertical
+
+    elif (
+        (prev_x < x and next_y < y) or
+        (next_x < x and prev_y < y)
+    ):
+        return body_topleft
+
+    elif (
+        (prev_x > x and next_y < y) or
+        (next_x > x and prev_y < y)
+    ):
+        return body_topright
+
+    elif (
+        (prev_x < x and next_y > y) or
+        (next_x < x and prev_y > y)
+    ):
+        return body_bottomleft
+
+    return body_bottomright
+
+
 def desenhar():
     screen.fill((0, 0, 0))
 
@@ -79,62 +133,14 @@ def desenhar():
         px = x * CELL
         py = y * CELL
 
-        # Cabeça
         if i == 0:
-            if direcao == 'd':
-                sprite = head_right
-            elif direcao == 'a':
-                sprite = head_left
-            elif direcao == 'w':
-                sprite = head_up
-            else:
-                sprite = head_down
+            sprite = get_head_sprite(direcao)
 
-        # Cauda
         elif i == len(cobra) - 1:
-            tx, ty = cobra[i]
-            px2, py2 = cobra[i - 1]
+            sprite = get_tail_sprite(cobra)
 
-            if px2 > tx:
-                sprite = tail_left
-            elif px2 < tx:
-                sprite = tail_right
-            elif py2 > ty:
-                sprite = tail_up
-            else:
-                sprite = tail_down
-
-        # Corpo
         else:
-            prev_x, prev_y = cobra[i - 1]
-            next_x, next_y = cobra[i + 1]
-
-            if prev_y == y and next_y == y:
-                sprite = body_horizontal
-
-            elif prev_x == x and next_x == x:
-                sprite = body_vertical
-
-            elif (
-                (prev_x < x and next_y < y) or
-                (next_x < x and prev_y < y)
-            ):
-                sprite = body_topleft
-
-            elif (
-                (prev_x > x and next_y < y) or
-                (next_x > x and prev_y < y)
-            ):
-                sprite = body_topright
-
-            elif (
-                (prev_x < x and next_y > y) or
-                (next_x < x and prev_y > y)
-            ):
-                sprite = body_bottomleft
-
-            else:
-                sprite = body_bottomright
+            sprite = get_body_sprite(cobra, i)
 
         screen.blit(sprite, (px, py))
 
