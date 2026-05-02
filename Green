@@ -41,6 +41,9 @@ def test_colisao():
    
     cobra, frutas, colidiu = snake.movimentacao(cobra, 'w', frutas)
 
+def test_head_right():
+    assert snake_game.get_head_sprite('d') is not None
+
     assert colidiu == True
 
 
