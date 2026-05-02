@@ -1,2 +1,3 @@
-def test_head_right():
-    assert snake_game.get_head_sprite('d') is not None
+def test_tail_left():
+    cobra = [(2,1),(1,1),(0,1)]
+    assert snake_game.get_tail_sprite(cobra) is not None
